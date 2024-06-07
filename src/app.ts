@@ -28,8 +28,6 @@ async function func() {
   const currentPlayback = await player.getCurrentPlayback();
   console.log(currentPlayback); */
   return { credsData, grabError };
-
-
 }
 gatherAndMapUsers().then((ret) =>{
   if(ret){
