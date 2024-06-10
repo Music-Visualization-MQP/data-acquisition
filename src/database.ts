@@ -28,7 +28,7 @@ export async function gatherUsers() {
 /**
  * 
  * @param data represents the data to be inserted into the played_tracks table
- * @returns the response from the insert query and an error if there is one
+ * @returns the response from the insert query 
  */
 export async function insertPlayed(data: any) {
   const { data: insertData, error: insertError } = await supabase

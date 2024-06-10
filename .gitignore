@@ -131,3 +131,5 @@ dist
 
 
 supabase/*
+
+.vscode/

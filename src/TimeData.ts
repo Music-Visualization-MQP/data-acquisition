@@ -22,5 +22,8 @@ export class TimeData {
     this.lastUpdated = new Date();
     this.now = new Date();
   }
+  public alterDelay(time: number) {
+    this.timeDiffMs = time;
+  }
   
 }

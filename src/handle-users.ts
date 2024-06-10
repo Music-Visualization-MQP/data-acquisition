@@ -1,6 +1,6 @@
-import { Client, Player } from "spotify-api.js";
 import { AlbumInfo } from "./AlbumInfo";
 import { TrackInfo } from "./TrackInfo";
+import { Client, Player } from "spotify-api.js";
 import * as database from "./database";
 import dotenv from "dotenv";
 import { TimeData } from "./TimeData";
@@ -20,13 +20,18 @@ export declare type PlayingSpotify = {
   timeData: TimeData;
 };
 
+export declare type SpDbResponse = { id: string; refresh_token: string };
+
 /**
  * This function converts the data from the spotify_credentials table to a map
  * @param data represents the data from the spotify_credentials table
  * @returns a map containing the data from the spotify_credentials table
  */
 function convertToMap(data: any[]) {
-  let map = new Map();
+  let map = new Map<string, { refresh_token: string }>();
+  if(data.length === 0) {
+    return map
+  };
   for (let obj of data) {
     map.set(obj.id, { refresh_token: obj.refresh_token });
   }
@@ -37,16 +42,49 @@ function convertToMap(data: any[]) {
  * of users and their refresh tokens
  * @returns a map containing the data from the spotify_credentials table
  */
-export async function gatherAndMapUsers(): Promise<void | Map<
-  string,
-  { refresh_token: string }
->> {
+export async function gatherAndMapUsers(
+  currentUsers: string[]
+): Promise<void | Map<string, { refresh_token: string }>> {
   const { credsData, grabError } = await database.gatherUsers();
+  let credsDataArray: { id: string; refresh_token: string }[];
+  let credsDataArrayCleaned: { id: string; refresh_token: string }[];
+  if (credsData) {
+    credsDataArray = credsData as SpDbResponse[];
+    credsDataArrayCleaned = removeCurrentUsers(credsDataArray, currentUsers);
+    console.log("newUUIDs", credsDataArrayCleaned);
+    return convertToMap(credsDataArrayCleaned);
+  }
   if (grabError) {
     console.log("Error grabbing data");
-    return;
+    return convertToMap([]);
   }
-  return convertToMap(credsData as JSON[]);
+}
+/**
+ * 
+ * @param credsDataArray contains the data from the spotify_credentials table
+ * @param currentUsers array representing the keys of the current users which is their...
+ * unique id from supabase
+ * @returns 
+ * 
+ * Todo, this is apt for a .filter, i was just in a rush, so maybe refactor this later
+ */
+function removeCurrentUsers(
+  credsDataArray: SpDbResponse[],
+  currentUsers: string[]
+) {
+  const noop = () => {
+    console.log("no arrays");
+  };
+  let ret: SpDbResponse[] = [];
+  for (let obj of credsDataArray) {
+    if (currentUsers.includes(obj.id)){ 
+      noop()
+    } else {
+      console.log("adding new user")
+      ret.push(obj);
+    }
+  }
+  return ret;
 }
 
 /**
@@ -55,7 +93,7 @@ export async function gatherAndMapUsers(): Promise<void | Map<
  * @returns a map containing the user data and their spotify information including...
  * the client, player, and track info
  */
-export async function updateUsers(
+export async function buildUserMap(
   data: Map<string, { refresh_token: string }>
 ): Promise<Map<string, PlayingSpotify>> {
   let ret = new Map();
@@ -77,7 +115,7 @@ export async function updateUsers(
       client: client,
       trackInfo: new TrackInfo(),
       player: player,
-      timeData: new TimeData()
+      timeData: new TimeData(),
     });
   }
   return ret;
@@ -85,26 +123,42 @@ export async function updateUsers(
 
 /**
  * this function consumes the data from the spotify_credentials table and updates the...
- * user's playback information if it has been 3 seconds since the last update, if the 
- * data is already in the databse then it will not be added again
- * @param data represents the data from the spotify_credentials table in map form 
+ * user's playback information if it has been 3 seconds since the last update, if the
+ * data is already in the database then it will not be added again
+ * 
+ * @param data represents the data from the spotify_credentials table in map form
  */
 
 export async function updateUsersPlayback(data: Map<string, PlayingSpotify>) {
   console.log(data);
 
   for (let [key, value] of data) {
-    if(!value.timeData.isTimeToUpdate()) {
+    if (!value.timeData.isTimeToUpdate()) {
       console.log("Not time to update");
-      await delay(1000)
+      await delay(1000);
     } else {
-      value.timeData.reset()
+      value.timeData.reset();
       console.log("Getting currently playing");
       const currPlaying = await value.player.getCurrentlyPlaying();
       console.log(currPlaying);
-      if(currPlaying) value.trackInfo.updateTrackInfo(currPlaying);
-    } 
-    if(value.trackInfo.isProgressSufficient() && !value.trackInfo.inDB) console.log("put me in the db", await database.insertPlayed({ user_id: key, ...value.trackInfo.createDbEntryObject()}))
+      if (currPlaying) value.trackInfo.updateTrackInfo(currPlaying);
+    }
+    if (value.trackInfo.isProgressSufficient() && !value.trackInfo.inDB) {
+      console.log("!!!!!!!!is in db", value.trackInfo.inDB);
+      console.log(
+        "put me in the db",
+        await database.insertPlayed({
+          user_id: key,
+          ...value.trackInfo.createDbEntryObject(),
+        })
+      );
+      value.trackInfo.inDB = true;
+      console.log(value);
+    } else
+      console.log(
+        "not put in db because progress insufficient or already in db",
+        value
+      );
     /* .then((res) => {
       console.log(res);
       if (res) {
@@ -113,5 +167,4 @@ export async function updateUsersPlayback(data: Map<string, PlayingSpotify>) {
       } else console.log("No track playing");
     }); */
   }
-  
 }
