@@ -19,12 +19,16 @@ export class TrackInfo {
   /**
    * 
    * @param spotifyJSON represents the JSON object from the Spotify API
-   * This function updates the track info with the data from the Spotify API
+   * This method updates the track info with the data from the Spotify API
+   * 
+   * TODO: Handle the case where the track is not a track and it is an episode, 
+   * this may be the responsibility of a different function
    */
 
   public updateTrackInfo(spotifyJSON: any) {
-    
+
     console.log("updateTrackInfo");
+    if(spotifyJSON.currentPlayingType !== "track") return;
     let item = spotifyJSON.item;
     if(item.externalID.isrc !== this.isrc) this.reset();
     console.log (spotifyJSON.progress);
@@ -94,6 +98,7 @@ export class TrackInfo {
       track_duration_ms: this.durationMs,
       track_album: this.albumInfo?.createDbEntryObject(),
       isrc: this.isrc,
+      duration : this.durationMs,
       listened_at: new Date().toISOString(),
       popularity: this.popularity
       

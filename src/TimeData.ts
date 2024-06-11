@@ -1,7 +1,7 @@
 export class TimeData {
   private lastUpdated : Date;
   /* this field represents how long the data aqirerer should wait */
-  private timeDiffMs: number = 3000
+  private timeDiffMs: number = 30000
   private now: Date;
   constructor(){
     this.now = new Date();

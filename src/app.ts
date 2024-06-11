@@ -1,7 +1,7 @@
 import { SupabaseClient, createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import {Client, Player} from "spotify-api.js"
-import {gatherAndMapUsers, buildUserMap,  updateUsersPlayback, PlayingSpotify} from "./handle-users";
+import {gatherAndMapUsers, buildUserMap,  updateUsersPlayback, PlayingSpotify, delay} from "./handle-users";
 import { TimeData } from "./TimeData";
 dotenv.config();
 
@@ -45,13 +45,14 @@ async function run() {
     if(timeToAcquire.isTimeToUpdate()) {
       const userIds = Array.from(obj!.keys())
       newUsers = await gatherAndMapUsers(userIds)
-      if((newUsers as Map<string, { refresh_token: string; }>).size > 0){
+      if((newUsers).size > 0){
         let newObj = await buildUserMap(newUsers as Map<string, { refresh_token: string; }>)
         obj =  new Map([...obj!, ...newObj!])
       }
       timeToAcquire.reset()
     }
     if(obj) await updateUsersPlayback(obj)
+    await delay(3000)
   }
 }
 

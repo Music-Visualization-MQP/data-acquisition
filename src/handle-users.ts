@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import { TimeData } from "./TimeData";
 import { time } from "console";
 dotenv.config();
-function delay(ms: number) {
+export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -44,7 +44,7 @@ function convertToMap(data: any[]) {
  */
 export async function gatherAndMapUsers(
   currentUsers: string[]
-): Promise<void | Map<string, { refresh_token: string }>> {
+): Promise<Map<string, { refresh_token: string }>> {
   const { credsData, grabError } = await database.gatherUsers();
   let credsDataArray: { id: string; refresh_token: string }[];
   let credsDataArrayCleaned: { id: string; refresh_token: string }[];
@@ -57,6 +57,10 @@ export async function gatherAndMapUsers(
   if (grabError) {
     console.log("Error grabbing data");
     return convertToMap([]);
+  } else {
+    console.log("No data");
+    return convertToMap([]);
+  
   }
 }
 /**
@@ -153,11 +157,10 @@ export async function updateUsersPlayback(data: Map<string, PlayingSpotify>) {
         })
       );
       value.trackInfo.inDB = true;
-      console.log(value);
+      //console.log(value);
     } else
       console.log(
-        "not put in db because progress insufficient or already in db",
-        value
+        "not put in db because progress insufficient or already in db"
       );
     /* .then((res) => {
       console.log(res);
