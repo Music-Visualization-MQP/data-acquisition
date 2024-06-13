@@ -101,7 +101,6 @@ export class TrackInfo {
       duration : this.durationMs,
       listened_at: new Date().toISOString(),
       popularity: this.popularity
-      
     }
   }
   

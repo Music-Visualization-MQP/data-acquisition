@@ -5,6 +5,8 @@ import {gatherAndMapUsers, buildUserMap,  updateUsersPlayback, PlayingSpotify, d
 import { TimeData } from "./TimeData";
 dotenv.config();
 
+
+
 console.log(process.env.ANON);
 // Create a single supabase client for interacting with your database
 const supabase: SupabaseClient = createClient(
