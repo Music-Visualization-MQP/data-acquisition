@@ -93,14 +93,13 @@ export class TrackInfo {
   public createDbEntryObject() {
     this.inDB = true;
     return {
-      track_name: this.trackName,
-      track_artists: this.trackArtists,
-      track_duration_ms: this.durationMs,
-      track_album: this.albumInfo?.createDbEntryObject(),
-      isrc: this.isrc,
-      duration : this.durationMs,
-      listened_at: new Date().toISOString(),
-      popularity: this.popularity
+      p_track_name: this.trackName,
+      p_track_artists: this.trackArtists,
+      p_track_duration_ms: this.durationMs,
+      p_track_album: this.albumInfo?.createDbEntryObject(),
+      p_isrc: this.isrc,
+      p_listened_at: new Date().toISOString(),
+      p_popularity: this.popularity
     }
   }
   

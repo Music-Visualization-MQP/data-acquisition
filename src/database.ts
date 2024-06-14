@@ -31,10 +31,13 @@ export async function gatherUsers() {
  * @returns the response from the insert query 
  */
 export async function insertPlayed(data: any) {
+  console.log("DATA!!!!!!", data)
+  data['p_user_id'] = data['user_id'];
+  delete data['user_id'];
   const { data: insertData, error: insertError } = await supabase
-    .from("played_tracks")
-    .insert(data)
-    .select();
+    .rpc('add_played_track', data)
+
+ 
   
   return { insertData, insertError };
 }
