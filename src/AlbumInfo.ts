@@ -15,7 +15,7 @@ export class AlbumInfo {
     }
     this.releaseDate = new Date(spotifyAlbumInfo.releaseDate)
     this.numTracks = spotifyAlbumInfo.totalTracks;
-    this.image = "placeholder";
+    this.image = spotifyAlbumInfo.images[0].url;
 
     console.log(this)
   }
