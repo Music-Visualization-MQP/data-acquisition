@@ -8,24 +8,7 @@ dotenv.config();
 
 
 console.log(process.env.ANON);
-// Create a single supabase client for interacting with your database
-const supabase: SupabaseClient = createClient(
-  process.env.SB_URL as string,
-  process.env.SERVICE as string,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false,
-    },
-  }
-)
-/* gatherAndMapUsers().then((ret) => {
-  if(ret){
-    updateUsers(ret).then((ret)=> updateUsersPlayback(ret));
-  }
-})
- */
+
 
 /**
  * This function runs the entire program by gathering the users and their refresh tokens...
