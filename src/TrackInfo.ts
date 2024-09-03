@@ -22,7 +22,7 @@ export class TrackInfo {
    * This method updates the track info with the data from the Spotify API
    * 
    * TODO: Handle the case where the track is not a track and it is an episode, 
-   * this may be the responsibility of a different function
+   * this may be the responsibility of a different function this is also ripe for inheritance/ interfaces
    */
 
   public updateTrackInfo(spotifyJSON: any) {
@@ -89,6 +89,7 @@ export class TrackInfo {
   /**
    * this method is used to create an object that can be used to create a new entry in the database
    * @returns an object that can be used to create a new entry in the database
+   * @todo change how indb is set because this might create a state mismatch
    */
   public createDbEntryObject() {
     this.inDB = true;
@@ -96,7 +97,6 @@ export class TrackInfo {
       p_track_name: this.trackName,
       p_track_artists: this.trackArtists,
       p_track_duration_ms: this.durationMs,
-      p_track_album: this.albumInfo?.createDbEntryObject(),
       p_isrc: this.isrc,
       p_listened_at: new Date().toISOString(),
       p_popularity: this.popularity
