@@ -1,47 +1,50 @@
 import { AlbumInfo } from "./AlbumInfo";
 
 export class TrackInfo {
-  public trackName: string | null = null;
-  public trackArtists: string[] | null = null;
-  public albumInfo: AlbumInfo | null = null;
-  public image: string | null = null;
-  public isrc: string | null = null;
-  public durationMs: number | null = null;
-  public progressMs: number | null = null;
-  public popularity: number | null = null;
+  private trackName: string | null = null;
+  private trackArtists: string[] | null = null;
+  private albumInfo: AlbumInfo | null = null;
+  private image: string | null = null;
+  private isrc: string | null = null;
+  private durationMs: number | null = null;
+  private progressMs: number | null = null;
+  private popularity: number | null = null;
   
 
-  public inDB: boolean | null = null;
+  private inDB: boolean | null = null;
 
   constructor() {
     this.inDB = false;
   }
+  public getInDB() { return this.inDB; }
+  public setInDB(value: boolean) { this.inDB = value; }
   /**
    * 
-   * @param spotifyJSON represents the JSON object from the Spotify API
+   * @param data represents the JSON object from the Spotify API
    * This method updates the track info with the data from the Spotify API
    * 
    * TODO: Handle the case where the track is not a track and it is an episode, 
    * this may be the responsibility of a different function this is also ripe for inheritance/ interfaces
    */
 
-  public updateTrackInfo(spotifyJSON: any) {
+  public updateTrackInfo(data: any) {
 
     console.log("updateTrackInfo");
-    if(spotifyJSON.currentPlayingType !== "track") return;
-    let item = spotifyJSON.item;
+    if(data.currentPlayingType !== "track") return;
+    let item = data.item;
     if(item.externalID.isrc !== this.isrc) this.reset();
-    console.log (spotifyJSON.progress);
+    console.log (data.progress);
     console.log(item);
     this.updateTrackArtists(item.artists);
     this.updateAlbumInfo(item.album);
     this.trackName = item.name;
     this.isrc = item.externalID.isrc;
     this.durationMs = item.duration;
-    this.progressMs = spotifyJSON.progress;
+    this.progressMs = data.progress;
     this.popularity = item.popularity;
     console.log(this);
   }
+  
   /**
    * this method resets the track info to null for another track to be played
    */
@@ -60,8 +63,8 @@ export class TrackInfo {
    */
   private updateAlbumInfo(album: any) {
     if (this.albumInfo === null) {
-      this.albumInfo = new AlbumInfo(album);
-
+      console.log(album)
+      this.albumInfo = new AlbumInfo(album.name, album.albumType, album.artists, album.images[0].url, new Date(album.releaseDate), album.totalTracks);
     }
     
   }
@@ -96,6 +99,7 @@ export class TrackInfo {
     return {
       p_track_name: this.trackName,
       p_track_artists: this.trackArtists,
+      p_track_album: this.albumInfo?.createDbEntryObject(),
       p_track_duration_ms: this.durationMs,
       p_isrc: this.isrc,
       p_listened_at: new Date().toISOString(),
@@ -103,4 +107,11 @@ export class TrackInfo {
     }
   }
   
+}
+
+export class SpotifyTrackInfo extends TrackInfo {
+  constructor() {
+    super();
+  }
+
 }

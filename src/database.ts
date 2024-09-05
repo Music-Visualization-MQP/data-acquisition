@@ -18,7 +18,7 @@ const supabase: SupabaseClient = createClient(
  * This function gathers the data from the spotify_credentials table
  * @returns a JSON array containing the data from the spotify_credentials table
  */
-export async function gatherUsers() {
+export async function gatherSpotifyUsers() {
   const { data: credsData, error: grabError } = await supabase
     .from("spotify_credentials")
     .select("*");
