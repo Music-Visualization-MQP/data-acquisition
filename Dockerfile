@@ -1,11 +1,25 @@
-FROM node:lts-alpine3.20
-WORKDIR /app
-COPY yarn.lock package.json ./
+#Build stage
+FROM node:alpine3.20 AS build
 
-RUN yarn install
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+RUN npm run build
 
-CMD ["yarn", "dev", "--host", "0.0.0.0"]
+#Production stage
+FROM node:alpine3.20 AS production
+
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm ci --only=production
+
+COPY --from=build /app/dist ./dist
+
+CMD ["node", "dist/app.js"]

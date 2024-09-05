@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dev": "ts-node ./src/app.ts",
+  "build": "rm -r ./dist && tsc",
+  "start": "npm run build && node dist/app.js"
   },
   "keywords": [],
   "author": "",
