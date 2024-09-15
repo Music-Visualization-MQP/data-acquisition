@@ -3,6 +3,8 @@ FROM node:alpine3.20 AS base
 
 WORKDIR /app
 
+COPY .env .
+
 COPY package*.json .
 
 RUN npm install
