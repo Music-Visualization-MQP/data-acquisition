@@ -11,7 +11,6 @@ COPY . .
 RUN npm install
 
 
-COPY wait.sh /app/
 
 # Make the script executable
 #RUN chmod +x /app/wait.sh
