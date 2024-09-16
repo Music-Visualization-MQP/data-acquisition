@@ -55,6 +55,7 @@ export async function gatherAndMapUsers(
     return convertToMap(credsDataArrayCleaned);
   }
   if (grabError) {
+    console.log(grabError);
     console.log("Error grabbing data");
     return convertToMap([]);
   } else {

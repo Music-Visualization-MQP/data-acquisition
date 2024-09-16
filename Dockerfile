@@ -3,20 +3,27 @@ FROM node:alpine3.20 AS base
 
 WORKDIR /app
 
-COPY .env .
-
-COPY package*.json .
+#COPY .env .
+RUN apk add --no-cache --upgrade bash
+RUN apk add --no-cache curl
+COPY . .
 
 RUN npm install
 
-COPY . .
+
+COPY wait.sh /app/
+
+# Make the script executable
+#RUN chmod +x /app/wait.sh
+
+# Set the entrypoint to the script
+#ENTRYPOINT ["/app/wait.sh"]
 
 FROM base AS dev
-EXPOSE 4200
 
 #RUN npm install -g typescript
 #RUN npm intall -g @angular/cli
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev"]
 #Production stage
 FROM base AS build
 RUN npm run build
