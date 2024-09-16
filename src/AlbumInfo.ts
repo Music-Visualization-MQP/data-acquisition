@@ -6,16 +6,16 @@ export class AlbumInfo {
   public releaseDate: Date
   public numTracks: number;
 
-  constructor(private spotifyAlbumInfo: any) {
-    this.albumName = spotifyAlbumInfo.name;
-    this.albumType = spotifyAlbumInfo.albumType;
+  constructor(albumName: string, albumType: string, artists: string[], image: string, releaseDate: Date, numTracks: number) {
+    this.albumName = albumName;
+    this.albumType = albumType;
     this.artists = [];
-    for (let artist of spotifyAlbumInfo.artists) {
-      this.artists.push(artist.name);
+    for (let artist of artists) {
+      this.artists.push(artist);
     }
-    this.releaseDate = new Date(spotifyAlbumInfo.releaseDate)
-    this.numTracks = spotifyAlbumInfo.totalTracks;
-    this.image = spotifyAlbumInfo.images[0].url;
+    this.releaseDate = releaseDate
+    this.numTracks = numTracks;
+    this.image = image;
 
     console.log(this)
   }
@@ -23,7 +23,7 @@ export class AlbumInfo {
    * 
    * @returns an object that can be used to create a new entry in the database
    */
-  public createDbEntryObject(){
+  public createDbEntryObject() {
     return {
       album_name: this.albumName,
       album_type: this.albumType,

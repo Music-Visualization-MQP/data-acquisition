@@ -35,6 +35,12 @@ const nullifySupabaseClient = () => {
  * This function gathers the data from the spotify_credentials table
  * @returns a JSON array containing the data from the spotify_credentials table
  */
+<<<<<<< ibixler-da-rework
+export async function gatherSpotifyUsers() {
+  const { data: credsData, error: grabError } = await supabase
+    .from("spotify_credentials")
+    .select("*");
+=======
 export async function gatherUsers() {
   const supabase  = await getSupabaseClient();
   try {
@@ -49,6 +55,7 @@ export async function gatherUsers() {
     nullifySupabaseClient();
     console.log("Error grabbing data")
     return {credsData: null, grabError}
+>>>>>>> main
 
   }
 }

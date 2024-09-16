@@ -13,12 +13,16 @@ export function delay(ms: number) {
 /**
  * This type represents the data that is being played on spotify and the users information
  */
-export declare type PlayingSpotify = {
-  client: Client;
-  player: Player;
+export declare type Playing = {
+  
   trackInfo: TrackInfo;
   timeData: TimeData;
 };
+
+export declare type PlayingSpotify = Playing & {
+  client: Client;
+  player: Player;
+}
 
 export declare type SpDbResponse = { id: string; refresh_token: string };
 
@@ -45,7 +49,7 @@ function convertToMap(data: any[]) {
 export async function gatherAndMapUsers(
   currentUsers: string[]
 ): Promise<Map<string, { refresh_token: string }>> {
-  const { credsData, grabError } = await database.gatherUsers();
+  const { credsData, grabError } = await database.gatherSpotifyUsers();
   let credsDataArray: { id: string; refresh_token: string }[];
   let credsDataArrayCleaned: { id: string; refresh_token: string }[];
   if (credsData) {
@@ -148,8 +152,8 @@ export async function updateUsersPlayback(data: Map<string, PlayingSpotify>) {
       console.log(currPlaying);
       if (currPlaying) value.trackInfo.updateTrackInfo(currPlaying);
     }
-    if (value.trackInfo.isProgressSufficient() && !value.trackInfo.inDB) {
-      console.log("!!!!!!!!is in db", value.trackInfo.inDB);
+    if (value.trackInfo.isProgressSufficient() && !value.trackInfo.getInDB()) {
+      console.log("!!!!!!!!is in db", value.trackInfo.getInDB());
       console.log(
         "put me in the db",
         await database.insertPlayed({
@@ -157,12 +161,11 @@ export async function updateUsersPlayback(data: Map<string, PlayingSpotify>) {
           ...value.trackInfo.createDbEntryObject(),
         })
       );
-      value.trackInfo.inDB = true;
+      value.trackInfo.setInDB(true);
       //console.log(value);
     } else
-      console.log(
-        "not put in db because progress insufficient or already in db"
-      );
+      if(value.trackInfo.getInDB()) console.log("already in db");
+      else if (!value.trackInfo.isProgressSufficient()) console.log("progress insufficient");
     /* .then((res) => {
       console.log(res);
       if (res) {

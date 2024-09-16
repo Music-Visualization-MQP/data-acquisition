@@ -1,7 +1,7 @@
 import { SupabaseClient, createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import {Client, Player} from "spotify-api.js"
-import {gatherAndMapUsers, buildUserMap,  updateUsersPlayback, PlayingSpotify, delay} from "./handle-users";
+import {gatherAndMapUsers, buildUserMap,  updateUsersPlayback, Playing,PlayingSpotify, delay} from "./handle-users";
 import { TimeData } from "./TimeData";
 dotenv.config();
 
