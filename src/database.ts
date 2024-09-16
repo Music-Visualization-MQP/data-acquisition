@@ -35,30 +35,13 @@ const nullifySupabaseClient = () => {
  * This function gathers the data from the spotify_credentials table
  * @returns a JSON array containing the data from the spotify_credentials table
  */
-<<<<<<< ibixler-da-rework
 export async function gatherSpotifyUsers() {
+  let supabase = await getSupabaseClient();
   const { data: credsData, error: grabError } = await supabase
     .from("spotify_credentials")
     .select("*");
-=======
-export async function gatherUsers() {
-  const supabase  = await getSupabaseClient();
-  try {
-    
-    console.log(supabase)
-    const { data: credsData, error: grabError } = await supabase
-      .from("spotify_credentials")
-      .select("*");
-  
-    return { credsData, grabError };
-  } catch (grabError){
-    nullifySupabaseClient();
-    console.log("Error grabbing data")
-    return {credsData: null, grabError}
->>>>>>> main
-
+  return { credsData, grabError };
   }
-}
 /**
  * 
  * @param data represents the data to be inserted into the played_tracks table
@@ -72,12 +55,12 @@ export async function insertPlayed(data: any) {
     delete data['user_id'];
     const { data: insertData, error: insertError } = await supabase
       .rpc('add_played_track', data)
-    return { insertData };
+    return { insertData, insertError };
 
   }catch(insertError){
     nullifySupabaseClient();
     console.log("Error inserting data")
-    return {insertError}
+    return {insertData, insertError}
   }
   console.log("DATA!!!!!!", data)
   data['p_user_id'] = data['user_id'];
