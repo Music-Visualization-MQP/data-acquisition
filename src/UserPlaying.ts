@@ -47,7 +47,6 @@ export class SpotifyUserPlaying extends UserPlaying{
     })
   }
   public async fire() : Promise<void> {
-    await this.init();
 
 
   };
@@ -97,8 +96,7 @@ export class MockUserPlaying extends UserPlaying{
   public async fire() : Promise<void> {
     console.log("Mock fire");
     for (let track of this.mockData){
-      let album = new AlbumInfo(track.albumInfo.albumName, "album", track.albumInfo.albumArtists, track.albumInfo.albumImage, new Date(track.albumInfo.albumReleaseDate), 1);
-      let trackInfo = new TrackInfo(track.trackName, track.trackArtists, track.albumInfo, track.image, track.isrc, track.durationMs, track.progressMs, track.popularity, track.timestamp);
+      
 
     }
     
