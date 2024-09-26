@@ -1,7 +1,7 @@
 import { AlbumInfo } from "./AlbumInfo";
 import { TrackInfo } from "./TrackInfo";
 
-export class PlayedTrackInfo {
+export class PlayedTrack {
   private playedAt: Date;
   private trackInfo: TrackInfo;
   private albumInfo: AlbumInfo;
@@ -14,9 +14,9 @@ export class PlayedTrackInfo {
 
   public createDbEntryObject() {
     return {
-      played_at: this.playedAt.toDateString(),
-      track_info: this.trackInfo.createDbEntryObject(),
-      album_info: this.albumInfo.createDbEntryObject(),
+      p_listened_at: this.playedAt.toISOString(),
+      track: this.trackInfo.createDbEntryObject(),
+      track_album: this.albumInfo.createDbEntryObject(),
     };
   }
 }

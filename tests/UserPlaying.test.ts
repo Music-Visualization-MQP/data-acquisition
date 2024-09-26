@@ -6,7 +6,7 @@ dotenv.config();
 describe("UserPlaying Tests", () => {
   let supabase: SupabaseClient;
   describe("UserPlaying Tests", () => {
-    let supabase: SupabaseClient;
+    let supabase: any;
     let userId: string;
     let context: any;
     let email: string = "test@test.com"
@@ -15,8 +15,9 @@ describe("UserPlaying Tests", () => {
     beforeAll(async () => {
       supabase = new SupabaseClient(
         process.env.SB_URL as string,
-        process.env.ANON as string
-      );
+        process.env.ANON as string,
+        { db: { schema: 'test' } })
+      ;
       const { data, error } = await supabase.auth.signUp({
         email: "test1@example.com",
         password: "password",
@@ -26,6 +27,8 @@ describe("UserPlaying Tests", () => {
       context = { refresh_token: "test-refresh-token" };
     });
     afterAll(async () => {
+      const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
       supabase = new SupabaseClient(
         process.env.SB_URL as string,
         process.env.SERVICE as string

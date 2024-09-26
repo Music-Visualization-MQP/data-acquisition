@@ -44,11 +44,10 @@ export class AlbumInfo {
    */
 
   public createDbEntryObject() {
-    return {
+    return {album: {
       album_name: this.albumName,
       album_type: this.albumType,
-      num_tracks: this.numTracks,
-      release_date: this.releaseDate.toDateString(),
+      release_date: this.releaseDate.toISOString(),
       artists: this.artists,
       genre: this.genre,
       upc: this.upc,
@@ -56,6 +55,6 @@ export class AlbumInfo {
       album_isrc: this.albumIsrc,
       popularity: this.popularity,
       image: this.image,
-    };
+    }};
   }
 }

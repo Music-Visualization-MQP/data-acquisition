@@ -24,12 +24,12 @@ export class TrackInfo {
    * @todo change how indb is set because this might create a state mismatch
    */
   public createDbEntryObject() {
-    return {
+    return {track :{
+      isrc: this.isrc,
       track_name: this.trackName,
       track_artists: this.trackArtists,
       track_duration_ms: this.durationMs,
-      isrc: this.isrc,
-    };
+    }};
   }
 }
 
